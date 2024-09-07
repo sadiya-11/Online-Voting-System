@@ -1,17 +1,17 @@
 <?php
-if (isset($_GET['added'])) { 
+if (isset($_GET['added'])) {
     ?>
+    
     <div class="alert alert-success my-3" role="alert">
         Election has been added successfully!
     </div>
     <?php
-} else if (isset($_GET['delete_id'])) { 
-    // Delete the election with the specified ID from the 'elections' table.
-    mysqli_query($db, "DELETE FROM elections WHERE id ='" . $_GET['delete_id'] . "'") OR die(mysqli_error($db));
+} else if (isset($_GET['delete_id'])) {
+    mysqli_query($db, "DELETE  FROM elections WHERE id ='" . $_GET['delete_id'] . "'") or die(mysqli_error($db));
     ?>
-    <div class="alert alert-danger my-3" role="alert">
-        Election has been deleted successfully!
-    </div>
+        <div class="alert alert-danger my-3" role="alert">
+            Election has been deleted successfully!
+        </div>
     <?php
 }
 ?>
@@ -19,23 +19,26 @@ if (isset($_GET['added'])) {
 <div class="row my-3">
     <div class="col-4">
         <h3 style="color: white;">Add New Election</h3>
-      <!-- Form for adding a new election -->
-        <form method="POST"> 
+        <form method="POST">
             <div class="form-group">
                 <input type="text" name="election_topic" placeholder="Election Topic" class="form-control" required />
             </div>
             <div class="form-group">
-                <input type="number" name="number_of_candidates" placeholder="Number Of Candidates" class="form-control" required />
+                <input type="number" name="number_of_candidates" placeholder="Number Of Candidates" class="form-control"
+                    required />
             </div>
             <div class="form-group">
-                <input type="text" onfocus="this.type='Date'" name="starting_date" placeholder="Starting Date" class="form-control" required />
+                <input type="text" onfocus="this.type='Date'" name="starting_date" placeholder="Staring Date"
+                    class="form-control" required />
             </div>
             <div class="form-group">
-                <input type="text" onfocus="this.type='Date'" name="ending_date" placeholder="Ending Date" class="form-control" required />
+                <input type="text" onfocus="this.type='Date'" name="ending_date" placeholder="Ending Date"
+                    class="form-control" required />
             </div>
             <input type="submit" value="Add Election" name="addElectionBtn" class="btn btn-success" />
         </form>
     </div>
+
     <div class="col-8">
         <h3 style="color: white;">Upcoming Elections</h3>
         <table class="table">
@@ -43,7 +46,7 @@ if (isset($_GET['added'])) {
                 <tr>
                     <th scope="col" style="color: white;">S.No</th>
                     <th scope="col" style="color: white;">Election Name</th>
-                    <th scope="col" style="color: white;">No. Of Candidates</th>
+                    <th scope="col" style="color: white;"> No. Of Candicates</th>
                     <th scope="col" style="color: white;">Starting Date</th>
                     <th scope="col" style="color: white;">Ending Date</th>
                     <th scope="col" style="color: white;">Status</th>
@@ -52,33 +55,36 @@ if (isset($_GET['added'])) {
             </thead>
             <tbody>
                 <?php
-                // Fetch all elections from the 'elections' table.
                 $fetchingData = mysqli_query($db, "SELECT * FROM elections") or die(mysqli_error($db));
                 $isAnyElectionAdded = mysqli_num_rows($fetchingData);
 
-                if ($isAnyElectionAdded > 0) { 
-                    $sno = 1; 
+                if ($isAnyElectionAdded > 0) {
+                    $sno = 1;
                     while ($row = mysqli_fetch_assoc($fetchingData)) {
                         $election_id = $row['id'];
                         ?>
                         <tr>
-                            <td style="color: white;"> <?php echo $sno++; ?> </td> 
-                            <td style="color: white;"> <?php echo $row['election_topic']; ?></td> 
-                            <td style="color: white;"> <?php echo $row['no_of_candidates']; ?></td> 
-                            <td style="color: white;"> <?php echo $row['starting_date']; ?></td> 
-                            <td style="color: white;"> <?php echo $row['ending_date']; ?></td> 
-                            <td style="color: white;"> <?php echo $row['status']; ?></td> 
+                            <td style="color: white;"> <?php echo $sno++; ?> </td>
+                            <td style="color: white;"> <?php echo $row['election_topic']; ?></td>
+                            <td style="color: white;"> <?php echo $row['no_of_candidates']; ?></td>
+                            <td style="color: white;"> <?php echo $row['starting_date']; ?></td>
+                            <td style="color: white;"> <?php echo $row['ending_date']; ?></td>
+                            <td style="color: white;"> <?php echo $row['status']; ?></td>
                             <td>
-                                <a href="edit_election.php?election_id=<?php echo $row['id']; ?>" class="btn btn-sm btn-warning">Edit</a> 
-                                <button class="btn btn-sm btn-danger" onclick="DeleteData(<?php echo $election_id; ?>)">Delete</button>
+                                <a href="edit_election.php?election_id=<?php echo $row['id']; ?>"
+                                    class="btn btn-sm btn-warning">Edit</a>
+                                <button class="btn btn-sm btn-danger"
+                                    onclick="DeleteData(<?php echo $election_id; ?>)">Delete</button>
                             </td>
+
                         </tr>
                         <?php
                     }
-                } else { 
+                } else {
                     ?>
                     <tr>
-                        <td colspan="7">No elections added yet!</td> 
+                        <td colspan="7" style="color: white;">No any election added yet! </td>
+
                     </tr>
                     <?php
                 }
@@ -90,42 +96,38 @@ if (isset($_GET['added'])) {
 
 <script>
     const DeleteData = (e_id) => {
-        let c = confirm("Are you sure you want to delete it?"); .
+        let c = confirm("Are you sure you want to delete it!!");
         if (c == true) {
-            location.assign("index.php?addElectionPage=1&delete_id=" + e_id); 
+            location.assign("index.php?addElectionPage=1&delete_id=" + e_id);
         }
     }
 </script>
 
 <?php
-// Check if the form was submitted.
-if (isset($_POST['addElectionBtn'])) { 
-    $election_topic = mysqli_real_escape_string($db, $_POST['election_topic']); 
-    $number_of_candidates = mysqli_real_escape_string($db, $_POST['number_of_candidates']); 
-    $starting_date = mysqli_real_escape_string($db, $_POST['starting_date']); 
-    $ending_date = mysqli_real_escape_string($db, $_POST['ending_date']); 
-    $inserted_by = $_SESSION['username']; 
-    $inserted_on = date("Y-m-d"); 
+if (isset($_POST['addElectionBtn'])) {
+    $election_topic = mysqli_real_escape_string($db, $_POST['election_topic']);
+    $number_of_candidates = mysqli_real_escape_string($db, $_POST['number_of_candidates']);
+    $starting_date = mysqli_real_escape_string($db, $_POST['starting_date']);
+    $ending_date = mysqli_real_escape_string($db, $_POST['ending_date']);
+    $inserted_by = $_SESSION['username'];
+    $inserted_on = date("Y-m-d");
 
-    // Create DateTime objects for comparison.
-    $current_date = date_create($inserted_on);
-    $start_date = date_create($starting_date);
-    $end_date = date_create($ending_date);
+    $current_date = new DateTime($inserted_on);
+    $start_date = new DateTime($starting_date);
+    $end_date = new DateTime($ending_date);
 
-    // Determine the status of the election based on the dates.
-    if ((int)date_diff($current_date, $end_date)->format("%R%a") < 0) {
-        $status = "Expired";
-    } else if ((int)date_diff($current_date, $start_date)->format("%R%a") > 0) {
+    if ($current_date < $start_date) {
         $status = "Inactive";
-    } else {
+    } elseif ($current_date >= $start_date && $current_date <= $end_date) {
         $status = "Active";
+    } else {
+        $status = "Expired";
     }
 
-    // Insert the new election into the database.
-    mysqli_query($db, "INSERT INTO elections(election_topic, no_of_candidates, starting_date, ending_date, status, inserted_by, inserted_on) VALUES ('" . $election_topic . "', '" . $number_of_candidates . "', '" . $starting_date . "', '" . $ending_date . "', '" . $status . "', '" . $inserted_by . "', '" . $inserted_on . "')")
-    or die(mysqli_error($db));
+    mysqli_query($db, "INSERT INTO elections(election_topic, no_of_candidates, starting_date, ending_date, status, inserted_by, inserted_on) VALUES ('" . $election_topic . "', '" . $number_of_candidates . "', '" . $starting_date . "', '" . $ending_date . "', '" . $status . "','" . $inserted_by . "', '" . $inserted_on . "')")
+        or die(mysqli_error($db));
     ?>
-    <script>location.assign("index.php?addElectionPage=1&added=1")</script> 
+    <script>location.assign("index.php?addElectionPage=1&added=1")</script>
     <?php
 }
 ?>
