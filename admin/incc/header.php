@@ -7,8 +7,7 @@ if ($_SESSION['key'] != "AdminKey") {
     die;
 }
 ?>
-
-
+    
 <!DOCTYPE html>
 <html lang="en">
 
