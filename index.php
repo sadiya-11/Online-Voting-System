@@ -6,8 +6,6 @@
 <?php
 session_start();
 require_once("admin/incc/config.php");
-
-// Fetch all elections from the database
 $fetchingElections = mysqli_query($db, "SELECT * FROM elections") or die(mysqli_error($db));
 while ($data = mysqli_fetch_assoc($fetchingElections)) {
     $starting_date = $data['starting_date'];
@@ -16,14 +14,11 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
     $election_id = $data['id'];
     $status = $data['status'];
 
-    //Active= Expire=Ending Date
-//Inactive = Active = Starting Date
     if ($status == "Active") {
         $date1 = date_create($curr_date);
         $date2 = date_create($ending_date);
         $diff = date_diff($date1, $date2);
 
- // If the current date is past the ending date, mark the election as "Expired"
         if ((int) $diff->format("%R%a") < 0) {
           //update
           mysqli_query($db, "UPDATE elections SET status = 'Expired' WHERE id = '".$election_id."'  ") OR die(mysqli_error($db));
@@ -34,19 +29,17 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
         $date2 = date_create($starting_date);
         $diff = date_diff($date1, $date2);
 
-// If the current date is the starting date or later, mark the election as "Active"
+
         if ((int) $diff->format("%R%a") <= 0) {
            //update
           mysqli_query($db, "UPDATE elections SET status = 'Active' WHERE id = '".$election_id."'  ") OR die(mysqli_error($db));
         }
     }
-
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Login - Online Voting System</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -72,9 +65,7 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                 <?php
                 if (isset($_GET['sign-up'])) {
                     ?>
-			
                       <!-- Sign-Up Form -->
-			
                     <div class="d-flex justify-content-center form_container">
                         <form method="POST"  onsubmit="return validateForm()">
                             <div class="input-group mb-3">
@@ -96,14 +87,14 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                                     <span class="input-group-text"><i class="fas fa-key"></i></span>
                                 </div>
                                 <input type="password" id="su_pass" name="su_pass" class="form-control input_pass" placeholder="Password" required />
-                                <span id="togglePassword" onclick="togglePasswordVisibility('su_pass', 'togglePassword')" style="cursor: pointer;">🙈</i></span>
+                                <span id="togglePassword" onclick="togglePasswordVisibility('su_pass', 'togglePassword')" style="cursor: pointer;">👁️</i></span>
                             </div>
                             <div class="input-group mb-2  password-container">
                                 <div class="input-group-append">
                                     <span class="input-group-text"><i class="fas fa-key"></i></span>
                                 </div>
                                 <input type="password" id="su_con_pass" name="su_con_pass" class="form-control input_pass" placeholder="Confirm Password" required />
-                                <span id="toggleConPassword" onclick="togglePasswordVisibility('su_con_pass', 'toggleConPassword')" style="cursor: pointer;">🙈</i></span>
+                                <span id="toggleConPassword" onclick="togglePasswordVisibility('su_con_pass', 'toggleConPassword')" style="cursor: pointer;">👁️</i></span>
                             </div>
 
 
@@ -123,7 +114,6 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                     ?>
                     
                      <!-- Login Form -->
-		    
                     <div class="d-flex justify-content-center form_container">
                         <form method="POST"  onsubmit="return validateForm()">
                             <div class="input-group mb-3">
@@ -138,7 +128,7 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                                     <span class="input-group-text"><i class="fas fa-key"></i></span>
                                 </div>
                                 <input type="password" id="password" name="password" class="form-control input_pass" placeholder="Password" required />
-                                <span id="toggleLoginPassword" onclick="togglePasswordVisibility('password', 'toggleLoginPassword')" style="cursor: pointer;">🙈</i></span>
+                                <span id="toggleLoginPassword" onclick="togglePasswordVisibility('password', 'toggleLoginPassword')" style="cursor: pointer;">👁️</i></span>
                             </div>
                             <div class="d-flex justify-content-center mt-3 login_container">
                                 <button type="submit" name="Login_button" class="btn login_btn">Login</button>
@@ -149,7 +139,7 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                     <div class="mt-4">
                         <div class="d-flex justify-content-center links">
                             Don't have an account? <a href="?sign-up=1" class="ml-2 text-black">Sign Up</a>
-                        </div>
+                        </div>                       
                     </div>
                     <?php
                 }
@@ -174,9 +164,11 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                 } else if (isset($_GET['invalid_access'])) {
                     ?>
                                 <span class="bg-white text-danger text-center my-3">Invalid uername or password</span>
+
                     <?php
                 }
                 ?>
+
             </div>
         </div>
     </div>
@@ -193,6 +185,7 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
                 alert('Contact number must be exactly 10 digits!');
                 return false; 
             }
+
             return true; 
         }
 
@@ -201,10 +194,10 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
             const toggleButton = document.getElementById(toggleButtonId);
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
-                toggleButton.textContent = '👁️'; // Change icon to indicate password is visible
+                toggleButton.textContent = '🙈'; // Change icon to indicate password is visible
             } else {
                 passwordField.type = 'password';
-                toggleButton.textContent = '🙈'; // Change icon back to indicate password is hidden
+                toggleButton.textContent = '👁️'; // Change icon back to indicate password is hidden
             }
         }
     </script>
@@ -212,6 +205,7 @@ while ($data = mysqli_fetch_assoc($fetchingElections)) {
 </html>
 
 <?php
+//session_start();
 require_once("admin/incc/config.php");
 
 if (isset($_POST['sign_up_button'])) {
@@ -226,7 +220,7 @@ if (isset($_POST['sign_up_button'])) {
 )") or die(mysqli_error($db));
         ?>
         <script> location.assign("index.php?sign-up=1&registered=1");</script>
-	    
+
         <?php
     } else {
         ?>
@@ -237,10 +231,9 @@ if (isset($_POST['sign_up_button'])) {
 } else if (isset($_POST['Login_button'])) {
     $contact_number = mysqli_real_escape_string($db, $_POST['contact_number']);
     $password = mysqli_real_escape_string($db, sha1($_POST['password']));
-
+ 
     //fetch query
     $fetchingData = mysqli_query($db, "SELECT * FROM users WHERE contact_number ='" . $contact_number . "'") or die(mysqli_error($db));
-
 
     if (mysqli_num_rows($fetchingData) > 0) {
         $data = mysqli_fetch_assoc($fetchingData);
@@ -261,9 +254,9 @@ if (isset($_POST['sign_up_button'])) {
                 $_SESSION['key'] = "VotersKey";
                 ?>
                     <script> location.assign("voters/index.php");</script>
+
                 <?php
             }
-
         } else {
             ?>
                 <script> location.assign("index.php?invalid_access=1");</script>
